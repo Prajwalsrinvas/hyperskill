@@ -139,7 +139,7 @@ class ToDoList(StageTest):
             task = list(task)
             if 'Second task' in task:
                 today = datetime.today().date()
-                if not str(today) in task:
+                if str(today) not in task:
                     return CheckResult.wrong('You saved wrong deadline for the tasks. Expected {}'.format(today))
                 break
         else:
@@ -153,9 +153,9 @@ class ToDoList(StageTest):
         first_date = datetime.today().date()
         second_date = first_date + timedelta(days=3)
         last_date = first_date + timedelta(days=6)
-        test_input = "5\nDeadline is today\n{}\n5\nDeadline in 3 days\n{}\n5\nDeadline in 6 days\n{}" \
-            .format(first_date, second_date, last_date).strip()
-        return test_input
+        return "5\nDeadline is today\n{}\n5\nDeadline in 3 days\n{}\n5\nDeadline in 6 days\n{}".format(
+            first_date, second_date, last_date
+        ).strip()
 
     def ignore_output(self, output):
         return '2'
@@ -261,9 +261,9 @@ class ToDoList(StageTest):
         first_date = datetime.today().date()
         second_date = first_date + timedelta(days=3)
         last_date = first_date + timedelta(days=6)
-        test_input = "5\nDeadline is today\n{}\n5\nDeadline in 3 days\n{}\n5\nDeadline in 6 days\n{}\n6" \
-            .format(first_date, second_date, last_date).strip()
-        return test_input
+        return "5\nDeadline is today\n{}\n5\nDeadline in 3 days\n{}\n5\nDeadline in 6 days\n{}\n6".format(
+            first_date, second_date, last_date
+        ).strip()
 
     def delete_tasks(self, output):
         ToDoList.tasks_before_delete = len(self.execute('SELECT * FROM task'))
@@ -271,7 +271,7 @@ class ToDoList(StageTest):
 
     def check_if_tasks_deleted(self, output):
         tasks_after_delete = len(self.execute('SELECT * FROM task'))
-        if not tasks_after_delete < ToDoList.tasks_before_delete:
+        if tasks_after_delete >= ToDoList.tasks_before_delete:
             return CheckResult.wrong('Once a task has been deleted, there should be less rows in the table.')
         self.is_completed = True
         return '0'
@@ -281,9 +281,8 @@ class ToDoList(StageTest):
             return
         with open('todo.db', 'w') as main_db:
             if os.path.exists('temp.db'):
-                temp_file = open('temp.db', 'r')
-                main_db.write(temp_file.read())
-                temp_file.close()
+                with open('temp.db', 'r') as temp_file:
+                    main_db.write(temp_file.read())
                 os.remove('temp.db')
 
     def check(self, reply, attach):

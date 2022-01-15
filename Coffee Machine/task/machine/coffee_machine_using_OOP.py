@@ -26,9 +26,9 @@ class Coffee:
     # Buy coffee
     def buy_coffee(self, option):
         if option == '1':  # espresso
-            if self.water - 250 < 0:
+            if self.water < 250:
                 print(Coffee.WATER_ERROR)
-            elif self.beans - 16 < 0:
+            elif self.beans < 16:
                 print(Coffee.BEAN_ERROR)
             else:
                 print(Coffee.READY_COFFEE)
@@ -37,11 +37,11 @@ class Coffee:
                 self.money += 4
                 self.cups -= 1
         elif option == '2':  # latte
-            if self.water - 350 < 0:
+            if self.water < 350:
                 print(Coffee.WATER_ERROR)
-            elif self.beans - 20 < 0:
+            elif self.beans < 20:
                 print(Coffee.BEAN_ERROR)
-            elif self.milk-  75 < 0:
+            elif self.milk < 75:
                 print(Coffee.MILK_ERROR)
             else:
                 print(Coffee.READY_COFFEE)
@@ -49,13 +49,13 @@ class Coffee:
                 self.milk -= 75
                 self.beans -= 20
                 self.money += 7
-                self.cups -= 1    
+                self.cups -= 1
         elif option == '3':  #cappuccino
-            if self.water - 200 < 0:
+            if self.water < 200:
                 print(Coffee.WATER_ERROR)
-            elif self.beans - 12 < 0:
+            elif self.beans < 12:
                 print(Coffee.BEAN_ERROR)
-            elif self.milk-  100 < 0:
+            elif self.milk < 100:
                 print(Coffee.MILK_ERROR)
             else:
                 print(Coffee.READY_COFFEE)

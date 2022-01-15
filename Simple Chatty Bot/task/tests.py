@@ -60,7 +60,7 @@ class ChattyBotTest(StageTest):
                 )
 
         last_line = lines[-1]
-        if "Congratulations, have a nice day!" != last_line:
+        if last_line != "Congratulations, have a nice day!":
             return CheckResult.wrong(
                 "Your last line should be:\n" +
                 "\"Congratulations, have a nice day!\"\n" +

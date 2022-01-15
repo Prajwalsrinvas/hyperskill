@@ -21,14 +21,13 @@ the_end_message = 'See you!'
 class Zookeeper(StageTest):
 
     def generate(self):
-        tests = [
+        return [
             TestCase(stdin='1\nexit', attach='1\nexit'),
             TestCase(stdin='3\nexit', attach='3\nexit'),
             TestCase(stdin='5\nexit', attach='5\nexit'),
             TestCase(stdin='0\n2\n4\nexit', attach='0\n2\n4\nexit'),
             TestCase(stdin='0\n1\n2\n3\n4\n5\nexit', attach='0\n1\n2\n3\n4\n5\nexit'),
         ]
-        return tests
 
     def check(self, reply, attach):
         indexes = list(map(str, range(6)))
