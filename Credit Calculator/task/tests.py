@@ -143,9 +143,10 @@ class CreditCalcTest(StageTest):
                 years = int(attach[2] / 12)
                 months = str(int(attach[2] % 12))
                 for i in numbers:
-                    if abs(attach[1] - float(i)) < 2:
-                        if str(months) in numbers or str(years) in numbers:
-                            return CheckResult.correct()
+                    if abs(attach[1] - float(i)) < 2 and (
+                        str(months) in numbers or str(years) in numbers
+                    ):
+                        return CheckResult.correct()
 
                 if years == 0:
                     output = (
@@ -182,27 +183,29 @@ class CreditCalcTest(StageTest):
                             output.format(years, attach[1], numbers),
                         )
             for i in numbers:
-                if not abs(attach[1] - float(i)) < 2:
-                    if not abs(attach[2] - float(i)) < 2:
-                        if attach[0] == 'payment':
-                            output = (
-                                'Looks like your annuity payments '
-                                'calculations aren\'t working properly. '
-                                'Correct annuity payment and overpayment are '
-                                '[ {0}, {1} ]'
-                                ', but you output: {2}'
-                            )
-                        else:
-                            output = (
-                                'Looks like your credit principal '
-                                'calculations aren\'t working properly. '
-                                'Correct credit principal and overpayment are '
-                                '[ {0}, {1} ]'
-                                ', but you output: {2}'
-                            )
-                        return CheckResult.wrong(
-                            output.format(attach[2], attach[1], numbers),
+                if (
+                    abs(attach[1] - float(i)) >= 2
+                    and abs(attach[2] - float(i)) >= 2
+                ):
+                    if attach[0] == 'payment':
+                        output = (
+                            'Looks like your annuity payments '
+                            'calculations aren\'t working properly. '
+                            'Correct annuity payment and overpayment are '
+                            '[ {0}, {1} ]'
+                            ', but you output: {2}'
                         )
+                    else:
+                        output = (
+                            'Looks like your credit principal '
+                            'calculations aren\'t working properly. '
+                            'Correct credit principal and overpayment are '
+                            '[ {0}, {1} ]'
+                            ', but you output: {2}'
+                        )
+                    return CheckResult.wrong(
+                        output.format(attach[2], attach[1], numbers),
+                    )
 
             return CheckResult.correct()
 
@@ -218,12 +221,8 @@ class CreditCalcTest(StageTest):
                 )
 
             for figure in attach:
-                flag = False
-                for number in numbers:
-                    if abs(float(number) - figure) < 2:
-                        flag = True
-                        break
-                if flag is False:
+                flag = any(abs(float(number) - figure) < 2 for number in numbers)
+                if not flag:
                     user_numbers = numbers[1::2]
                     if numbers[-1] not in user_numbers:
                         user_numbers.append(numbers[-1])

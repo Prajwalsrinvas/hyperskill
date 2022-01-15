@@ -16,7 +16,7 @@ def luhn(n, check=False):
 
 
 def num_required_to_make_divisible_by_10(control_num):
-    for i in range(10):
+    for _ in range(10):
         if control_num % 10 == 0:
             return control_num
         control_num += 1
@@ -26,8 +26,7 @@ def ccnum_gen():
     num = int('400000' + str(random.randint(0, 999999999)).zfill(10))
     control_num = luhn(num)
     checksum = num_required_to_make_divisible_by_10(control_num) - control_num
-    ccnum = str(num)[:-1] + str(checksum)
-    return ccnum
+    return str(num)[:-1] + str(checksum)
 
 
 try:

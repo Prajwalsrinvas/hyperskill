@@ -1,13 +1,11 @@
 import random
 
-file = open('rating.txt')
-rating_dict = {}
+with open('rating.txt') as file:
+    rating_dict = {}
 
-for line in file.readlines():
-    k, v = line.split()
-    rating_dict[k] = int(v)
-
-file.close()
+    for line in file.readlines():
+        k, v = line.split()
+        rating_dict[k] = int(v)
 
 
 def b_beats_a(a, b):

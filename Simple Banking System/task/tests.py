@@ -188,10 +188,7 @@ def check_db_rows(output: str, value_to_return):
         for number in numbers:
             if len(number) != 16:
                 return CheckResult.wrong(f'Wrong card number \'{number}\'. The card number should be 16-digit length.')
-            is_found = False
-            for row in rows:
-                if number in row:
-                    is_found = True
+            is_found = any(number in row for row in rows)
             if not is_found:
                 return CheckResult.wrong('Your database doesn’t save newly created cards.\n'
                                          'Make sure you commit your DB changes right after saving a new card in the database!')

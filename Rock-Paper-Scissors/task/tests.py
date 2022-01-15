@@ -21,7 +21,7 @@ class RPSTest(StageTest):
         invalid_input_cases = ["Tom\n\nrock\npaper\npaper\nscissors\nblabla\n!exit",
                                "Tom\n\nrock\ninvalid\n!exit",
                                "Tom\n\nrock\nrock\nrock\nrock-n-roll\n!exit"]
-        tests = list()
+        tests = []
         # Cases that check multiple input
         [tests.append(
             TestCase(

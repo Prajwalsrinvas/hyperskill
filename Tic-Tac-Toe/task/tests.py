@@ -19,7 +19,7 @@ def get_state(symbol):
         return FieldState.X
     elif symbol == 'O':
         return FieldState.O
-    elif symbol == ' ' or symbol == '_':
+    elif symbol in [' ', '_']:
         return FieldState.FREE
     else:
         return None
@@ -134,13 +134,11 @@ class TicTacToeField:
 
         for line in lines:
             cols = line[2], line[4], line[6]
-            x: int = 0
-            for c in cols:
+            for x, c in enumerate(cols):
                 state = get_state(c)
                 if state is None:
                     return None
                 field[y][x] = state
-                x += 1
             y -= 1
 
         return TicTacToeField(constructed=field)
@@ -156,14 +154,15 @@ class TicTacToeField:
         candidate_field = ''
         inside_field = False
         for line in lines:
-            if '----' in line and not inside_field:
-                inside_field = True
-                candidate_field = ''
-            elif '----' in line and inside_field:
-                field = TicTacToeField.parse(candidate_field)
-                if field is not None:
-                    fields += [field]
-                inside_field = False
+            if '----' in line:
+                if not inside_field:
+                    inside_field = True
+                    candidate_field = ''
+                else:
+                    field = TicTacToeField.parse(candidate_field)
+                    if field is not None:
+                        fields += [field]
+                    inside_field = False
 
             if inside_field and line.startswith('|'):
                 candidate_field += line + '\n'
@@ -188,19 +187,14 @@ def iterate_cells(initial: str) -> str:
     if index == -1:
         return ''
 
-    full_input: str = ''
-    for i in range(index, index + 9):
-        full_input += inputs[i % len(inputs)] + '\n'
-
-    return full_input
+    return ''.join(inputs[i % len(inputs)] + '\n' for i in range(index, index + 9))
 
 
 class TicTacToeTest(StageTest):
     def generate(self) -> List[TestCase]:
         tests: List[TestCase] = []
 
-        i: int = 0
-        for input in inputs:
+        for i, input in enumerate(inputs):
             full_move_input = iterate_cells(input)
 
             str_nums = input.split()
@@ -210,18 +204,13 @@ class TicTacToeTest(StageTest):
             if i % 2 == 1:
                 full_move_input = f'4 {i}\n' + full_move_input
 
-            full_game_input = ''
-            for _ in range(9):
-                full_game_input += full_move_input
-
+            full_game_input = ''.join(full_move_input for _ in range(9))
             tests += [
                 TestCase(
                     stdin=full_game_input,
                     attach=(x, y)
                 )
             ]
-
-            i += 1
 
         return tests
 
@@ -253,7 +242,11 @@ class TicTacToeTest(StageTest):
         lines = reply.splitlines()
         last_line = lines[-1]
 
-        if not ('X wins' in last_line or 'O wins' in last_line or 'Draw' in last_line):
+        if (
+            'X wins' not in last_line
+            and 'O wins' not in last_line
+            and 'Draw' not in last_line
+        ):
             return CheckResult.wrong(
                 "Can't parse final result, " +
                 "should contain \"Draw\", \"X wins\" or \"O wins\".\n" +

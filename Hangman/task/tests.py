@@ -20,7 +20,7 @@ class CoffeeMachineTest(StageTest):
         tests = []
 
         for word in description_list + out_of_description + [ascii_lowercase]:
-            for i in range(100):
+            for _ in range(100):
                 words = [w if randint(1, 100) < 95 else w + w for w in word * 50 + all_letters]
                 shuffle(words)
                 inputs = '\n'.join(words)
@@ -47,7 +47,10 @@ class CoffeeMachineTest(StageTest):
     def check(self, reply: str, attach: Any) -> CheckResult:
         reply = self._fix_reply(reply)
         lines = reply.splitlines()
-        useful_lines = [i for i in reply.splitlines() if not ("play" in i and "exit" in i)]
+        useful_lines = [
+            i for i in reply.splitlines() if "play" not in i or "exit" not in i
+        ]
+
 
         if len(lines) == len(useful_lines):
             return CheckResult.wrong(
@@ -87,17 +90,16 @@ class CoffeeMachineTest(StageTest):
         not_ascii = 'It is not an ASCII lowercase letter'
         print_single = 'You should input a single letter'
 
-        if is_hanged:
-            if (no_such_letter not in full_blocks[-1]):
-                return CheckResult.wrong(
-                    f'Last block contains "{hanged}" '
-                    f'but doesn\'t contain "{no_such_letter}". '
-                    f'Check the first example. These texts '
-                    f'should be within the same block. Your last block:\n\n'
-                    f'{full_blocks[-1]}'
-                )
+        if is_hanged and (no_such_letter not in full_blocks[-1]):
+            return CheckResult.wrong(
+                f'Last block contains "{hanged}" '
+                f'but doesn\'t contain "{no_such_letter}". '
+                f'Check the first example. These texts '
+                f'should be within the same block. Your last block:\n\n'
+                f'{full_blocks[-1]}'
+            )
 
-        lengths = set(len(i) for i in blocks)
+        lengths = {len(i) for i in blocks}
 
         str_lengths = []
         for i, curr_len in enumerate(lengths, 1):
@@ -132,8 +134,7 @@ class CoffeeMachineTest(StageTest):
             blocks += [blocks[-1]]
             full_blocks += [full_blocks[-1]]
 
-        for letter, prev, next, prev_full, next_full in zip(
-                attach, blocks[0:], blocks[1:], full_blocks[0:], full_blocks[1:]):
+        for letter, prev, next, prev_full, next_full in zip(attach, blocks[:], blocks[1:], full_blocks[:], full_blocks[1:]):
 
             # ---
             detect_not_one = len(letter) != 1
@@ -268,20 +269,20 @@ class CoffeeMachineTest(StageTest):
             )
 
         if is_hanged:
-            if wrong_count != 8:
-                return CheckResult.wrong(
+            return (
+                CheckResult.wrong(
                     f'User was hanged after {wrong_count} wrong guesses, but should after 8'
                 )
-            else:
-                return CheckResult.correct()
+                if wrong_count != 8
+                else CheckResult.correct()
+            )
 
-        if is_survived:
-            if wrong_count >= 8:
-                return CheckResult.wrong(
-                    f'User survived but have {wrong_count} wrong guesses. He should be hanged'
-                )
-            else:
-                return CheckResult.correct()
+        if wrong_count >= 8:
+            return CheckResult.wrong(
+                f'User survived but have {wrong_count} wrong guesses. He should be hanged'
+            )
+        else:
+            return CheckResult.correct()
 
 
 if __name__ == '__main__':

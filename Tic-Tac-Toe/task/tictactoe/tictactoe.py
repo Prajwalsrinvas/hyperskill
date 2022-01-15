@@ -31,14 +31,11 @@ def ask_user_input():
         print("Coordinates should be from 1 to 3!")
         ask_user_input()
 
-    elif ttt[ttt_dict[(x, y)]] == 'X' or ttt[ttt_dict[(x, y)]] == 'O':
+    elif ttt[ttt_dict[(x, y)]] in ['X', 'O']:
         print("This cell is occupied! Choose another one!")
         ask_user_input()
     else:
-        if count % 2 == 0:
-            l = 'X'
-        else:
-            l = 'O'
+        l = 'X' if count % 2 == 0 else 'O'
         ttt[ttt_dict[(x, y)]] = l
         print_ttt(ttt)
         count += 1
@@ -73,6 +70,6 @@ print_ttt()
 
 while True:
     ask_user_input()
-    if check_state(ttt) == 'X wins' or check_state(ttt) == 'O wins' or check_state(ttt) == 'Draw':
+    if check_state(ttt) in ['X wins', 'O wins', 'Draw']:
         break
 print(check_state(ttt))

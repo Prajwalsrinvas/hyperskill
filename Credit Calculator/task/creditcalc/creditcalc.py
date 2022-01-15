@@ -18,8 +18,8 @@ P = float(args.principal)
 n = int(args.periods)
 i = float(args.interest) / 100 / 12
 
-# checking for less than 4 values and  negative numbers 
-if len(sys.argv) - 1 < 4 or monthly_payment < 0 or P < 0 or n < 0 or i < 0:  # len - 1 as first value is path to file
+# checking for less than 4 values and  negative numbers
+if len(sys.argv) < 5 or monthly_payment < 0 or P < 0 or n < 0 or i < 0:  # len - 1 as first value is path to file
     print("Incorrect parameters.")
     exit()
 
